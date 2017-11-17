@@ -2,6 +2,7 @@
   <div id="app">
     <div class="NavBar" >
       <div class="tag">
+        <div ><a href="/Ch"><img src="./assets/PARISE-HK-logo.png" class="logoImg"></a></div>
         <span>PRAISE-HK</span>
       </div>
     </div>
@@ -80,7 +81,11 @@
     position: relative;
     height: 80px;
     width: 100%;
-    background-color: #8ce1ff;
+    background-color: #d9d9d9;
+    border-width: 1px;
+  }
+  .logoImg{
+    height: 55px;
   }
   .tag {
     position: absolute;

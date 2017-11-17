@@ -40,6 +40,63 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 
+  /*modify leaflet*/
+  .leaflet-div-icon {
+    border: 0.5px solid #f0f0f0;
+  }
+  .leaflet-popup-content-wrapper{
+    border-radius: 2px;
+  }
+  .leaflet-popup-content{
+    margin: 5px 20px;
+    line-height: 1.4;
+  }
+
+  .Description {
+    margin-left: 5px;
+    font-size: 14px;
+
+    float: left;
+    padding-top: 3px;
+  }
+  .LabelDescription{
+    border-bottom: 1px solid #f2f2f2;
+  }
+  .DetailMapDescription {
+
+    float: left;
+    width: 170px;
+
+  }
+  .FeatureDescription{
+
+    float: left;
+    padding-top: 3px;
+  }
+  .ItemDescription {
+
+    float: left;
+    width: 60px;
+    display: inline;
+  }
+  .IconDescription {
+    float: left;
+    margin-left: 10px;
+    margin-top: 3px;
+    height: 12px;
+    width: 30px;
+    display: inline;
+  }
+  .ValueDescription {
+    float: left;
+    padding-left: 5px;
+  }
+  .StationDescription {
+    margin-top: 10px;
+    border-top: 1px solid #f2f2f2;
+    width: 100%;
+    float: left;
+  }
 </style>
