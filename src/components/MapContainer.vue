@@ -86,7 +86,7 @@
     margin-left: 10px;
     margin-top: 3px;
     height: 12px;
-    width: 30px;
+    width: 12px;
     display: inline;
   }
   .ValueDescription {
