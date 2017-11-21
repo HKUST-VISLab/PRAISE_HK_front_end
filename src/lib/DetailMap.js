@@ -60,7 +60,7 @@ DetailMap.prototype.init = function(){
 
 
 DetailMap.prototype.setMarks = function(stations, getLoc){
-  console.log('stations', stations);
+
   stations.forEach((station, i) =>{
     station.loc = station.type == 'aqi'? station.loc.reverse(): station.loc;
   });
@@ -84,18 +84,25 @@ DetailMap.prototype.setMarks = function(stations, getLoc){
     pointToLayer:  (feature, latlng)=>{
       let iconType = feature.properties.iconType;
       let station_code = feature.properties.id;
+      let time = null //feature.properties.station_record.recent == null? null: feature.properties.station_record.recent.time;
+      if(feature.properties.station_record.recent != null){
+        time = feature.properties.station_record.recent.time;
+        let _tempDate = new Date(time * 1000);
+        time = _tempDate.getFullYear() + '-' + formatTimeItem(_tempDate.getMonth()) +'-' +  formatTimeItem(_tempDate.getDay()) +  '' +
+          ' ' + formatTimeItem(_tempDate.getHours()) + ':' + formatTimeItem(_tempDate.getMinutes()) + ':' + formatTimeItem(_tempDate.getSeconds())
+      }
+
       let _color = iconType == 'aqi'?'red':'blue';
       if(iconType != 'aqi'){
         return null
       }
 
-
       var myIcon = L.divIcon({
         iconSize: new L.Point(latlng[0], latlng[1]),
-        html: generateDiv(station_code, 5)
+        html: generateDiv(feature.properties.station_record, 5)
       });
       L.marker(latlng, {icon: myIcon}).addTo(this.map)
-        .bindPopup(generatePopUpDiv(station_code, feature.properties.station_record, '2017-06-31 14:32'));
+        .bindPopup(generatePopUpDiv(station_code, feature.properties.station_record, time));
       let circleMarker = L.circleMarker(latlng, {
         radius: 3,
         fillColor: _color,
@@ -124,6 +131,9 @@ DetailMap.prototype.on = function(event, func){
   }
 };
 function AQHILevel2Color(level){
+  if(level == null || level == ''){
+    return '#f0f0f0'
+  }
   if(level < 1){
     return 'grey'
   }else if(level > 10){
@@ -133,10 +143,16 @@ function AQHILevel2Color(level){
   let colors = ['#4DB748','#4DB748','#4DB748', '#FBA417', '#FBA417', '#FBA417','#ED1B24','#99380E','#99380E','#99380E','#000000'];
   return colors[level - 1]
 }
-function generateDiv(label, level){
+function generateDiv(agg, level){
+  let station_code = agg['station_code']
+  if(agg.recent == null){
+    level = ''
+  }else{
+    level = agg.recent['AQHI']['obs']
+  }
   return  '<div style="width: 100px; height: 20px; ";>' +
-    '<div style="width:25%; background-color:'+ AQHILevel2Color(level) +'; height: 18px;float: left">' + level + '</div>' +
-    '<div style="float: left; width: 75%">' + label + '</div>' +
+    '<div style="width:25%; background-color:'+ Feature2Color(level, 'AQHI') +'; height: 18px;float: left">' + level + '</div>' +
+    '<div style="float: left; width: 75%">' + station_code + '</div>' +
     '</div>';
 };
 
@@ -166,7 +182,7 @@ function generatePopUpDiv(label, AQAggregation, time){
     str += generateSubPopUpDiv(aq, Feature2Color(AQAggregation['recent'][AQMap[aq]]['obs'], aq), AQAggregation['recent'][AQMap[aq]]['obs'])
   }
   return  '<div style="width: 150px; height: 420px; ";>' +
-    '<p class = "LabelDescription" style="font-size: 20px;color:'+ AQHILevel2Color(1)+'">'+ AQAggregation['station_code'] + '</p>' +
+    '<p class = "LabelDescription" style="font-size: 20px;">'+ AQAggregation['station_code'] + '</p>' +
 
     '<div>' +
       str
@@ -183,25 +199,14 @@ function generatePopUpDiv(label, AQAggregation, time){
   '</div>';
 };
 
-// function Feature2Color(level, AQ){
-//   console.log('level', level, AQ);
-//   if(level == null){
-//     return 'grey'
-//   }
-//   if(level < 0){
-//     return 'grey'
-//   }else if(level > 10){
-//     level = 11
-//   }
-//   let v = Math.floor(level) < 1 ? 1 : Math.floor(level)
-//   v-= 1
-//   let colors = ['#4DB748','#4DB748','#4DB748', '#FBA417', '#FBA417', '#FBA417','#ED1B24','#99380E','#99380E','#99380E','#000000'];
-//   return colors[v]
-// }
-
+function formatTimeItem(item){
+  return parseInt(item) < 10? '0' + item: item
+}
 
 function Feature2Color(level, AQ){
-
+  if(level == null || level == ''){
+    return '#d2d2d2'
+  }
   if(level == null){
     return 'grey'
   }
@@ -238,7 +243,6 @@ function Feature2Color(level, AQ){
   if(index == null){
     index = segArr.length;
   }
-  console.log(AQ, level, segArr, index)
   let colors = ['#00FF0C', '#4DB748', '#FBA417', '#ED1B24','#ED1B24','#ED1B24','#99380E','#99380E','#000000'];
   return colors[index]
 }

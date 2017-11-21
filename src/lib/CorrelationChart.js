@@ -1,6 +1,6 @@
 import * as d3 from "d3"
 let models = ["CAMx", "CMAQ", "NAQPMS"];
-let colors = ['rgb(231, 186, 82)', 'rgb(214, 97, 107)', 'rgb(181, 207, 107)', 'blue']
+let colors = ['rgb(231, 186, 82)', 'rgb(214, 97, 107)', 'rgb(181, 207, 107)', 'blue', 'red']
 let CorrelationChart = function(el){
   this.el = el;
   this.width = el.clientWidth;
@@ -15,7 +15,7 @@ let CorrelationChart = function(el){
 };
 
 CorrelationChart.prototype.setData = function(dataList){
-  console.log('dataList', dataList[0])
+  console.log('dataList', dataList)
   this.svg.selectAll('.chartContainer').remove();
   this.container = this.svg.append('g').attr('class', 'chartContainer');
   this.dataList = dataList;
@@ -31,7 +31,7 @@ CorrelationChart.prototype.draw = function(dataList, index){
   let corrContainerWidth = this.width ;
   let startTime = new Date(dataList[0].time * 1000);
   let endTime = new Date(dataList[dataList.length - 1].time * 1000);
-  let attrs = models.concat(['obs']);
+  let attrs = models.concat(['obs', 'ml']);
 
   let maxDiff = d3.max(dataList, (dataObj,i)=>{
     let arr = [];
@@ -186,7 +186,7 @@ CorrelationChart.prototype.drawBrushArea = function(){
     .range([this.containerMarginLeftAndRight, corrContainerWidth - this.containerMarginLeftAndRight])
     .domain([startTime, endTime]);
 
-  let attrs = models.concat(['obs']);
+  let attrs = models.concat(['obs','ml']);
 
   let maxValue = d3.max(dataList, (dataObj,i)=>{
     return d3.max(dataObj.data, (d,i)=>{
